@@ -24,14 +24,16 @@ Permite registrar, buscar, modificar y analizar productos mediante un menú en c
 
 ## 🧱 Estructura del proyecto
 
+```text
 tienda_juguetes/
-│ main.py
-│ README.md
+│  main.py
+│  README.md
 └─ modulos/
-│ init.py
-│ menu.py
-│ gestion_datos.py
-│ validaciones.py
+   │  __init__.py
+   │  menu.py
+   │  gestion_datos.py
+   │  validaciones.py
+
 
 
 ---

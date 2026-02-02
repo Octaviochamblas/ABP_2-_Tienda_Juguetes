@@ -10,9 +10,13 @@ from modulos.gestion_datos import (
     resumen_inventario
 )
 
+from modulos.funciones_utiles import pausar, imprimir_titulo
+from modulos.datos_basicos import pedir_entero
+
+
 def mostrar_menu():
     while True:
-        print("\n=== TIENDA DE JUGUETES - SISTEMA DE INVENTARIO ===")
+        imprimir_titulo("TIENDA DE JUGUETES - SISTEMA DE INVENTARIO")
         print("1. Agregar juguete")
         print("2. Mostrar inventario completo")
         print("3. Buscar juguete por nombre")
@@ -22,24 +26,29 @@ def mostrar_menu():
         print("7. Ver resumen del inventario")
         print("0. Salir")
 
-        opcion = input("Selecciona una opción: ").strip()
+        opcion = pedir_entero("Selecciona una opción: ", minimo=0, maximo=7)
 
-        if opcion == "1":
+        if opcion == 1:
             agregar_juguete()
-        elif opcion == "2":
+            pausar()
+        elif opcion == 2:
             listar_juguetes()
-        elif opcion == "3":
+            pausar()
+        elif opcion == 3:
             buscar_juguete_por_nombre()
-        elif opcion == "4":
+            pausar()
+        elif opcion == 4:
             eliminar_juguete()
-        elif opcion == "5":
+            pausar()
+        elif opcion == 5:
             actualizar_stock()
-        elif opcion == "6":
+            pausar()
+        elif opcion == 6:
             mostrar_stock_bajo()
-        elif opcion == "7":
+            pausar()
+        elif opcion == 7:
             resumen_inventario()
-        elif opcion == "0":
+            pausar()
+        elif opcion == 0:
             print("👋 Saliendo del sistema...")
             break
-        else:
-            print("❌ Opción inválida. Intenta nuevamente.")

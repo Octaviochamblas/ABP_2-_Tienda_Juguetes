@@ -1,54 +1,40 @@
 # modulos/gestion_datos.py
 
-# "Base de datos" en memoria: lista de diccionarios
+from modulos.datos_basicos import pedir_texto, pedir_entero
+from modulos.validaciones import normalizar
+from modulos.funciones_utiles import imprimir_tabla, imprimir_titulo
+
 inventario = []
 
-# modulos/gestion_datos.py
-
-inventario = []
 
 def agregar_juguete():
-    print("\n--- AGREGAR JUGUETE ---")
-    nombre = input("Nombre: ").strip()
-    categoria = input("Categoría (ej: muñecas, autos, peluches): ").strip()
+    imprimir_titulo("AGREGAR JUGUETE")
 
-    # Normalizamos nombre para comparar
-    nombre_normalizado = nombre.lower()
+    nombre = pedir_texto("Nombre: ")
+    categoria = pedir_texto("Categoría (ej: muñecas, autos, peluches): ")
 
-    # Verificar duplicado por nombre
+    nombre_norm = normalizar(nombre)
+
+    # Validación de duplicado por nombre (usa normalizar en validaciones.py)
     for j in inventario:
-        if j["nombre"].strip().lower() == nombre_normalizado:
+        if normalizar(j["nombre"]) == nombre_norm:
             print(f"⚠️ Ya existe '{j['nombre']}' en el inventario (stock actual: {j['stock']}).")
             print("1. Sumar stock al existente")
             print("2. Cancelar y no agregar")
-            opcion = input("Elige opción: ").strip()
 
-            if opcion == "1":
-                while True:
-                    stock_txt = input("¿Cuánto stock quieres sumar?: ").strip()
-                    if stock_txt.isdigit() and int(stock_txt) > 0:
-                        j["stock"] += int(stock_txt)
-                        print(f"✅ Stock actualizado. Nuevo stock: {j['stock']}")
-                        return
-                    print("❌ Cantidad inválida.")
+            opcion = pedir_entero("Elige opción (1-2): ", minimo=1, maximo=2)
+
+            if opcion == 1:
+                cantidad = pedir_entero("¿Cuánto stock quieres sumar?: ", minimo=1)
+                j["stock"] += cantidad
+                print(f"✅ Stock actualizado. Nuevo stock: {j['stock']}")
+                return
             else:
                 print("❌ Operación cancelada.")
                 return
 
-    # Si NO es duplicado, pedimos precio y stock normalmente
-    while True:
-        precio_txt = input("Precio (solo número): ").strip()
-        if precio_txt.isdigit() and int(precio_txt) > 0:
-            precio = int(precio_txt)
-            break
-        print("❌ Precio inválido. Intenta de nuevo.")
-
-    while True:
-        stock_txt = input("Stock (0 o más): ").strip()
-        if stock_txt.isdigit():
-            stock = int(stock_txt)
-            break
-        print("❌ Stock inválido. Intenta de nuevo.")
+    precio = pedir_entero("Precio (solo número): ", minimo=1)
+    stock = pedir_entero("Stock (0 o más): ", minimo=0)
 
     juguete = {
         "nombre": nombre,
@@ -60,26 +46,29 @@ def agregar_juguete():
     inventario.append(juguete)
     print("✅ Juguete agregado.")
 
+
 def listar_juguetes():
-    print("\n--- INVENTARIO COMPLETO ---")
+    imprimir_titulo("INVENTARIO COMPLETO")
+
     if len(inventario) == 0:
         print("No hay juguetes cargados.")
         return
 
-    _imprimir_tabla(inventario)
+    imprimir_tabla(inventario)
 
 
 def buscar_juguete_por_nombre():
-    print("\n--- BUSCAR JUGUETE ---")
+    imprimir_titulo("BUSCAR JUGUETE")
+
     if len(inventario) == 0:
         print("No hay juguetes cargados.")
         return
 
-    buscado = input("Nombre a buscar: ").strip().lower()
+    buscado = normalizar(pedir_texto("Nombre a buscar: "))
 
     resultados = []
     for j in inventario:
-        if buscado in j["nombre"].lower():
+        if buscado in normalizar(j["nombre"]):
             resultados.append(j)
 
     if len(resultados) == 0:
@@ -87,71 +76,55 @@ def buscar_juguete_por_nombre():
         return
 
     print(f"✅ Se encontraron {len(resultados)} resultado(s):")
-    _imprimir_tabla(resultados)
+    imprimir_tabla(resultados)
 
 
 def eliminar_juguete():
-    print("\n--- ELIMINAR JUGUETE ---")
+    imprimir_titulo("ELIMINAR JUGUETE")
+
     if len(inventario) == 0:
         print("No hay juguetes cargados.")
         return
 
-    listar_juguetes()
+    imprimir_tabla(inventario)
+    pos = pedir_entero("Número del juguete a eliminar: ", minimo=1, maximo=len(inventario))
 
-    while True:
-        pos_txt = input("Ingresa el número del juguete a eliminar: ").strip()
-        if pos_txt.isdigit():
-            pos = int(pos_txt)
-            if 1 <= pos <= len(inventario):
-                eliminado = inventario.pop(pos - 1)
-                print(f"🗑️ Eliminado: {eliminado['nombre']}")
-                return
-        print("❌ Número inválido. Intenta otra vez.")
+    eliminado = inventario.pop(pos - 1)
+    print(f"🗑️ Eliminado: {eliminado['nombre']}")
+
+
 def actualizar_stock():
-    print("\n--- ACTUALIZAR STOCK ---")
+    imprimir_titulo("ACTUALIZAR STOCK")
+
     if len(inventario) == 0:
         print("No hay juguetes cargados.")
         return
 
-    listar_juguetes()
-
-    while True:
-        pos_txt = input("Número del juguete a actualizar: ").strip()
-        if pos_txt.isdigit():
-            pos = int(pos_txt)
-            if 1 <= pos <= len(inventario):
-                break
-        print("❌ Número inválido. Intenta otra vez.")
+    imprimir_tabla(inventario)
+    pos = pedir_entero("Número del juguete a actualizar: ", minimo=1, maximo=len(inventario))
 
     juguete = inventario[pos - 1]
     print(f"Seleccionaste: {juguete['nombre']} (stock actual: {juguete['stock']})")
 
     print("1. Sumar stock")
     print("2. Restar stock")
+    opcion = pedir_entero("Elige opción (1-2): ", minimo=1, maximo=2)
 
-    opcion = input("Elige opción: ").strip()
+    cantidad = pedir_entero("Cantidad: ", minimo=1)
 
-    while True:
-        cant_txt = input("Cantidad: ").strip()
-        if cant_txt.isdigit() and int(cant_txt) > 0:
-            cantidad = int(cant_txt)
-            break
-        print("❌ Cantidad inválida.")
-
-    if opcion == "1":
+    if opcion == 1:
         juguete["stock"] += cantidad
         print(f"✅ Stock actualizado. Nuevo stock: {juguete['stock']}")
-    elif opcion == "2":
+    else:
         if cantidad > juguete["stock"]:
             print("❌ No puedes restar más de lo que hay en stock.")
         else:
             juguete["stock"] -= cantidad
             print(f"✅ Stock actualizado. Nuevo stock: {juguete['stock']}")
-    else:
-        print("❌ Opción inválida.")
-        
+
+
 def mostrar_stock_bajo(limite=3):
-    print(f"\n--- JUGUETES CON STOCK BAJO (<= {limite}) ---")
+    imprimir_titulo(f"STOCK BAJO (<= {limite})")
 
     if len(inventario) == 0:
         print("No hay juguetes cargados.")
@@ -166,47 +139,27 @@ def mostrar_stock_bajo(limite=3):
         print("✅ No hay juguetes con stock bajo.")
         return
 
-    _imprimir_tabla(bajos)
+    imprimir_tabla(bajos)
 
 
 def resumen_inventario():
-    print("\n--- RESUMEN DEL INVENTARIO ---")
+    imprimir_titulo("RESUMEN DEL INVENTARIO")
 
     if len(inventario) == 0:
         print("No hay juguetes cargados.")
         return
 
     productos_distintos = len(inventario)
-
     total_unidades = 0
     valor_total = 0
-
     categorias = set()
 
     for j in inventario:
         total_unidades += j["stock"]
         valor_total += j["stock"] * j["precio"]
-        categorias.add(j["categoria"].strip().lower())
+        categorias.add(normalizar(j["categoria"]))
 
     print(f"Productos distintos: {productos_distintos}")
     print(f"Unidades totales (suma de stock): {total_unidades}")
     print(f"Categorías distintas: {len(categorias)}")
     print(f"Valor total del inventario: ${valor_total}")
-
-def _imprimir_tabla(lista):
-    """Imprime una lista de juguetes en formato de tabla."""
-    if len(lista) == 0:
-        print("No hay registros para mostrar.")
-        return
-
-    print("\nN°  | Nombre                      | Categoría           | Precio    | Stock")
-    print("-" * 75)
-
-    for i, j in enumerate(lista, start=1):
-        nombre = j["nombre"][:26]
-        categoria = j["categoria"][:18]
-        precio = j["precio"]
-        stock = j["stock"]
-        print(f"{i:<3} | {nombre:<26} | {categoria:<18} | ${precio:<7} | {stock}")
-
-

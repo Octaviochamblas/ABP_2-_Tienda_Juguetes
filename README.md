@@ -1,29 +1,17 @@
 # 🎁 Sistema de Inventario – Tienda de Juguetes
 
-Proyecto desarrollado en Python para la gestión de inventario de una tienda de juguetes.  
-Permite registrar, buscar, modificar y analizar productos mediante un menú en consola.
+Sistema en Python para gestionar un inventario de juguetes desde consola.
 
----
+## Funcionalidades
+- Agregar juguetes (con control de duplicados por nombre)
+- Mostrar inventario completo (tabla)
+- Buscar por nombre
+- Eliminar
+- Actualizar stock (sumar/restar)
+- Ver stock bajo
+- Resumen del inventario
 
-## 📌 Funcionalidades
-
-- Agregar juguetes al inventario.
-- Mostrar inventario completo en formato tabla.
-- Buscar juguetes por nombre.
-- Eliminar juguetes.
-- Actualizar stock (sumar o restar).
-- Mostrar juguetes con stock bajo.
-- Ver resumen del inventario:
-  - productos distintos
-  - unidades totales
-  - categorías únicas
-  - valor total del inventario
-- Prevención de juguetes duplicados por nombre.
-
----
-
-## 🧱 Estructura del proyecto
-
+## Estructura
 ```text
 tienda_juguetes/
 │  main.py
@@ -32,27 +20,6 @@ tienda_juguetes/
    │  __init__.py
    │  menu.py
    │  gestion_datos.py
+   │  datos_basicos.py
    │  validaciones.py
-
-
-
----
-
-## ▶️ Ejecución
-
-1. Abrir la carpeta en Visual Studio Code.
-2. Abrir terminal.
-3. Ejecutar:
-
-```bash
-python main.py
-
-🧠 Tecnologías
-
-    Python 3
-
-    Estructuras de datos: listas, diccionarios, sets
-
-    Control de flujo: if, while, for
-
-    Modularización en archivos .py
+   │  funciones_utiles.py
